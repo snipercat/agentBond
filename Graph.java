@@ -9,7 +9,6 @@ package unalcol.agents.examples.labyrinth.teseo.agentbond;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import javax.xml.soap.Node;
 
 
 /**

@@ -7,7 +7,6 @@
 package unalcol.agents.examples.labyrinth.teseo.agentbond;
 
 import java.util.ArrayList;
-import unalcol.types.collection.vector.Vector;
 
 /**
  *
@@ -16,7 +15,9 @@ import unalcol.types.collection.vector.Vector;
 public class SearchNode {
     
     Nodo node;
-    private ArrayList<int[]> targetPath = new ArrayList<int[]>();
+    private ArrayList<int[]> targetPath = new ArrayList<>();
+    
+    
     SearchNode(Nodo root) {
         this.node = root;
         //this.node = (Nodo)root.clone();

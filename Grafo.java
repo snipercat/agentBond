@@ -18,7 +18,7 @@ public class Grafo {
     
     
     Grafo(){
-        this.nodos = new HashMap<String,Nodo>();
+        this.nodos = new HashMap<>();
     }
 
     public void agregarNodos(Nodo... nodos){

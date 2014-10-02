@@ -4,10 +4,9 @@
  */
 package unalcol.agents.examples.labyrinth.teseo.agentbond;
 
-import static java.lang.Math.random;
 import java.util.ArrayList;
 import unalcol.agents.examples.labyrinth.teseo.simple.*;
-import unalcol.types.collection.vector.Vector;
+import unalcol.agents.simulate.util.SimpleLanguage;
 
 /**
  *
@@ -18,22 +17,18 @@ public class JamesBond extends SimpleTeseoAgentProgram {
     private int orientation=0; // 0=N 1=E 2=S 3=W
     private int[] position=new int[]{0,0}; //Position(x,y)
     private int[] lastVisitedNode = new int[]{0,0};// Position of last node (x,y)
-    private ArrayList<int[]> targetPath = new ArrayList<int[]>(); //Path of nodes that the agent need to visit.
+    private ArrayList<int[]> targetPath = new ArrayList<>(); //Path of nodes that the agent need to visit.
     private Graph grafo = new Graph();
     private int   lastDirectionTaken = 0;
     
-    int RandomFrom(Integer... values){
-
-        int myRand = (int)(Math.random() * (values.length - 0) + 0);
-        return values[myRand];
+    public JamesBond(SimpleLanguage _language) {
+     super.setLanguage( _language);
     }
-    
-    
-    
     
     public JamesBond() {
      //grafo.add(new Nodo(position));
-    }
+    } 
+    
     
     @Override
     public int accion(boolean PF, boolean PD, boolean PA, boolean PI, boolean MT) {
@@ -80,7 +75,7 @@ public class JamesBond extends SimpleTeseoAgentProgram {
             return action;
         }
         
-       if(targetPath.size()==0){
+       if(targetPath.isEmpty()){
         //SI NO HAY UN OBJETIVO DEFINIDO ES POR QUE SIGUE EXPLORANDO.
            //Buscar si ya está guardado el nodo en el grafo
            Nodo actualNode  = this.grafo.searchbyPosition(position);
@@ -123,7 +118,7 @@ public class JamesBond extends SimpleTeseoAgentProgram {
        }
        
        //SI HAY UN OBJETIVO DEFINIDO VA A EL
-       if(targetPath.size()!=0){// Si hay un objetivo 
+       if(!targetPath.isEmpty()){// Si hay un objetivo 
           int[] targetPos = targetPath.get(0); //Obtener primer camino
           Nodo nodoActual = grafo.searchbyPosition(position);
           int accion = nodoActual.getAction( targetPos, orientation ); // retorna la acción que se debe tomar de acuerdo a la posición deseada y a la orientación.
