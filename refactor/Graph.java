@@ -6,27 +6,36 @@
 
 package unalcol.agents.examples.labyrinth.teseo.agentbond.refactor;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
 /**
  *
  * @author SNIPERCAT
  */
 public class Graph {
-    //hashmap
-    
+    HashMap<String,Node> graph;
+
+    public Graph() {
+        graph = new HashMap<>();
+    }
     
     public void addNode(Node node){
-        //TODO Agregar nodo al hashmap
+        graph.put(node.getId(), node);
     }
     
-    public Node getNodeByID(){
-    //TODO Obtener nodo por identificador
-        
-    return null;
+    public Node getNodeByID( String id){
+        return graph.get(id);
     }
     
+    /**
+     * Retorna un nodo dada su posición
+     * @param position
+     * @return 
+     */
     public Node getNodeByPosition(int [] position){
-        //TODO Obtener nodo por posicion
-    return null;
+        return graph.get( Utilities.getIdFromPosition(position));
     }
     
     /**
@@ -36,14 +45,14 @@ public class Graph {
      * @return Todos los hijos no nulos del nodo actual excepto el nodo padre.
      */
     public Node[] getChilds( Node actualNode, Node parentNode ){
+        String[] childsID = actualNode.getChilds();
         //TODO Obtener los hijos de un nodo
         return null;
     }
 
     
     boolean isEmpty() {
-        //TODO El grafo está vacio?
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return graph.isEmpty();
     }
 
     /**
@@ -71,7 +80,12 @@ public class Graph {
             globalOrientation = (orientation + 3)%4;
             addNode(node.setEmpyChildAt(globalOrientation));
         }
+        System.out.println("Position "+node.getId());
+        System.out.println("CHILDS ADDED!!!!! "+node.getChildsasString());
+        System.out.println("END CHILDS ADDED!!!!!");
       }
+    
+    
 
     
     /**
@@ -81,14 +95,76 @@ public class Graph {
      * @return 
      */
     int[] getRandomEmptyChildPosition(Node node) {
-        //TODO Obtiene la posición de uno de los hijos vacios del nodo
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String[] childsID = node.getChilds();
+        ArrayList<Node> nodes = new ArrayList<>();        
+        Node child;
+        for(int c=0; c<childsID.length; c++){
+            child = getNodeByID(childsID[c]);
+            if( child != null && !child.isVisited())
+                nodes.add(child);
+        }
+        
+        if(nodes.isEmpty())
+            return null;
+        
+        Random r = new Random();
+        
+        return nodes.get(r.nextInt(nodes.size())).getPosition();
     }
 
     void addAllChilds(Node firstNode, boolean PF, boolean PD, boolean PA, boolean PI, int orientation) {
         //TODO Agregar todos los hijos en donde no haya pared, se agregan como hijos nuevos, similar a addEmptyChilds, pero se tiene en cuenta la pared de atras
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        int globalOrientation = 0;
+        
+        //Agrega un hijo en donde no haya pared
+        if(!PF){
+            globalOrientation = orientation;
+            addNode(firstNode.setEmpyChildAt(globalOrientation));
+        }
+        if(!PD){
+            globalOrientation = (orientation + 1)%4;
+            addNode(firstNode.setEmpyChildAt(globalOrientation));
+        }
+        if(!PA){
+            globalOrientation = (orientation + 2)%4;
+            addNode(firstNode.setEmpyChildAt(globalOrientation));
+        }
+        if(!PI){
+            globalOrientation = (orientation + 3)%4;
+            addNode(firstNode.setEmpyChildAt(globalOrientation));
+        }
+
+        
+    }
+    
+    int[] getRandomChildPosition(Node node) {
+        String[] childsID = node.getChilds();
+        ArrayList<Node> nodes = new ArrayList<>();        
+        Node child;
+        //**
+        
+        String info = "pos: "+node.getId()+ "Childs ["+ node.getChildsasString()+ "] ";
+        
+        //**
+        
+        
+        for(int c=0; c<childsID.length; c++){
+            child = getNodeByID(childsID[c]);
+            if( child != null )
+                nodes.add(child);
+        }
+        
+        Random r = new Random();
+        int n = r.nextInt(nodes.size());
+        
+        info += "SelID: "+nodes.get(n).getId();
+        info += "Selpos: "+ Utilities.getIdFromPosition(nodes.get(n).getPosition());
+System.out.println(info);
+        return nodes.get(n).getPosition();
     }
     
     
+    
 }
+

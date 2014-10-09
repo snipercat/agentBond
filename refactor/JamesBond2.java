@@ -16,12 +16,7 @@ import unalcol.agents.simulate.util.SimpleLanguage;
  */
 public class JamesBond2 extends SimpleTeseoAgentProgram {
     
-    private int Objective;  //  0. Normal (Solo se está explorando)
-                            //  1. Ir a nodo no explorado (Ya se tiene una ruta definida)
-                            //  2. Esperar a que se vaya el agente (ERspera por un tiempo a que se mueva)
-                            //  3. Buscar otro Camino no explorado (Cuando un agente no se movio)
-                            //  4. Devolver por que está encerrado (Espera hasta que se vaya el agente.)
-    private int lastObjective;                            
+                    
     
     private int orientation=0; // 0=N 1=E 2=S 3=W
     private int[] position=new int[]{0,0}; //Position(x,y)
@@ -30,7 +25,6 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
     private Graph grafo = new Graph();
     private int   lastDirectionTaken = 0;
     
-    private boolean noReturn;
     
     public JamesBond2(SimpleLanguage _language) {
      super.setLanguage( _language);
@@ -101,15 +95,11 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
     String x = cmd.get(0);
     cmd.remove(0);
     
-    if( x == language.getAction(3)){
+    if( x.equals(language.getAction(3))){
         updateOrientation(1);
     }
-    if( x == language.getAction(2)){
+    if( x.equals(language.getAction(2))){
             updatePosition();
-            
-            //TODO Check this
-            if(targetPath.size() != 0)
-                lastDirectionTaken = orientation;
     }
     return new Action(x);
   }
@@ -154,12 +144,14 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
             Node firstNode = new Node(position);
             grafo.addAllChilds(firstNode, PF, PD, PA, PI, orientation);
             grafo.addNode(firstNode);
-            int action = firstNode.getRandomChildAction(orientation);
+            int[] pos =  grafo.getRandomChildPosition(firstNode);
+            //int action = firstNode.getRandomChildAction(orientation);
             this.lastVisitedNode = this.position.clone();
             //updateOrientation(action);
-            //lastDirectionTaken = orientation;
             //updatePosition();
-            return action;
+            //lastDirectionTaken = (action + orientation) % 4;
+            targetPath.add(pos);
+            //return action;
         }
         
         
@@ -169,7 +161,7 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
             Node actualNode = this.grafo.getNodeByPosition(position);
             Node lastNode = this.grafo.getNodeByPosition(lastVisitedNode);
             //Si está guardado
-            if (actualNode != null) {   
+            if (actualNode != null && actualNode.isVisited()) {   
                 //Enlazar este nodo con el nodo anterior, si es el mismo, eliminar el hijo
                 if ( Utilities.isSameNode( actualNode, lastNode)) {
                     lastNode.deleteChildAt(lastDirectionTaken);
@@ -194,7 +186,11 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
                 targetPath.add(pos); //Actuaizar target con las acciones que se deben ejecutar.
             } else {
                 // TODO Algoritmo de Busqueda que retorne el camino hacia el nodo sin explorar más cercano.
-                targetPath = Utilities.applyDFS(grafo, actualNode);
+                System.out.println("SEARCH!!!!!"); 
+                targetPath.clear();
+                targetPath.add(  grafo.getRandomChildPosition(actualNode) );
+                System.out.println("ADDED: "+ Utilities.getIdFromPosition(targetPath.get(0))); 
+                //targetPath = Utilities.applyDFS(grafo, actualNode);
             }
         }
         
@@ -206,14 +202,14 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
             
             // retorna la acción que se debe tomar de acuerdo a la posición deseada y a la orientación.
             int accion = nodoActual.getActionToChild( Utilities.getIdFromPosition(targetPos), orientation); 
-            
+System.out.println("pos: "+Utilities.getIdFromPosition(position)  +" targt: "+Utilities.getIdFromPosition(targetPos)+" Action "+accion);            
             //Actualizar datos
             this.lastVisitedNode = this.position.clone(); //Actualizar ultimo nodo visitado
             //updateOrientation(accion); //actualiza orientación
             //updatePosition(); //actualiza posición
             targetPath.remove(0); //Elimina path
-            System.out.println(targetPath.size());
-            //lastDirectionTaken = orientation;
+            lastDirectionTaken = (accion + orientation) % 4;
+//System.out.println("LAST: "+lastVisitedNode[0]+","+lastVisitedNode[1]);
             return accion;
         }
         return 0;

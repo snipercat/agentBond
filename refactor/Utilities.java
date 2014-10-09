@@ -17,8 +17,11 @@ public class Utilities {
     static int MAX_COST = 999;
     
     static boolean isSameNode(Node NodeA, Node NodeB) {
-        //TODO retornar si ambos nodos son el mismo
-        return false;
+        return NodeA.getId() == NodeB.getId();
+    }
+    
+    static String getIdFromPosition(int[] position){
+        return position[0]+","+position[1];
     }
 
     static ArrayList<int[]> applyDFS(Graph grafo, Node actualNode) {
@@ -26,10 +29,7 @@ public class Utilities {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    static String getIdFromPosition(int[] position){
-        //TODO Generar ID de un nodo a partir de una posición
-        return null;
-    }
+    
     
     
     

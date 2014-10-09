@@ -26,12 +26,12 @@ public class Node {
 
     Node(int[] position) {
         this.id = Utilities.getIdFromPosition(position);
-        this.position = position;
+        this.position = position.clone();
     }
     
     Node(int[] position, boolean visited) {
         this.id = Utilities.getIdFromPosition(position);
-        this.position = position;
+        this.position = position.clone();
         this.visited = visited;
     }
     
@@ -167,19 +167,23 @@ public class Node {
         
          int rotations = 0;
         int targeOrientation=0;
-        
-               
-        
-        if(  childs[0] != null && childs[0] == childID){
+/*         
+        System.out.println("----//// CHILDS");
+        for (int r = 0; r < childs.length; r++){
+            System.out.println(childs[r]);
+        }
+        System.out.println("----//// END CHILDS");
+  */      
+        if(  childs[0] != null && childs[0].equals(childID)){
             targeOrientation = 0;
         }
-        if(childs[1] != null && childs[1] == childID){
+        if(childs[1] != null && childs[1].equals(childID)){
             targeOrientation = 1;
         }
-        if(childs[2] != null && childs[3] == childID){
+        if(childs[2] != null && childs[2].equals(childID)){
             targeOrientation = 2;
         }
-        if(childs[3] != null && childs[2] == childID){
+        if(childs[3] != null && childs[3].equals(childID)){
             targeOrientation = 3;
         }
         
@@ -188,5 +192,15 @@ public class Node {
         }
         
         return rotations; 
+    }
+    
+    
+    String getChildsasString(){
+        String ret="";
+        System.out.println("----//// CHILDS");
+        for (int r = 0; r < childs.length; r++){
+            ret += childs[r]+ " | ";
+        }
+        return ret;
     }
 }
