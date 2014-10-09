@@ -7,6 +7,10 @@
 package unalcol.agents.examples.labyrinth.teseo.agentbond.refactor;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import unalcol.agents.examples.labyrinth.teseo.agentbond.Nodo;
+import unalcol.agents.examples.labyrinth.teseo.agentbond.refactor.SearchNode;
 
 /**
  *
@@ -26,11 +30,47 @@ public class Utilities {
 
     static ArrayList<int[]> applyDFS(Graph grafo, Node actualNode) {
         //TODO realizar busqueda de nodos vacios en el grafo partiendo del nodo actual
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        SearchNode rootNode= new SearchNode(actualNode);
+        
+        //Guarda las posiciones visitadas
+        LinkedList<int[]> visitedPositions = new LinkedList<>();
+        visitedPositions.add(rootNode.getPosition());
+        
+        Queue q = new LinkedList();
+        q.add(rootNode);
+        
+        while(!q.isEmpty()){
+                SearchNode s = (SearchNode)q.poll();
+                Node n = s.getNode();                
+                ArrayList<Node> sucessors = grafo.getSucessors(n);
+                
+                for (Node hijo : sucessors) {
+
+                    //Si no está en la lista
+                    if( !inList(visitedPositions, hijo.getPosition())){
+                        //si el hijo no ha sido visitado, retornar camino.
+                        if( !hijo.isVisited()){
+                            ArrayList<int[]> path = s.getTargetPath();
+                            path.add( hijo.getPosition() );
+                            return path;
+                        }
+                        //si no ha sido visitado, se agrega en la cola y en la lista de posiciones visitadas
+                        visitedPositions.add(hijo.getPosition());
+                        q.add( new SearchNode(hijo, s.getTargetPath(), hijo.getPosition()) );
+                    }
+		}   
+        }
+        
+        return null;
     }
     
-    
-    
-    
-    
+    private static boolean inList(LinkedList<int[]> visitedPositions, int[] posicion) {
+        for (int[] c : visitedPositions){
+            if(c[0]==posicion[0] && c[1] == posicion[1])
+                return true;
+        }
+        return false;
+    }
 }
+    

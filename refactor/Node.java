@@ -197,10 +197,16 @@ public class Node {
     
     String getChildsasString(){
         String ret="";
-        System.out.println("----//// CHILDS");
+        //System.out.println("----//// CHILDS");
         for (int r = 0; r < childs.length; r++){
             ret += childs[r]+ " | ";
         }
         return ret;
     }
+    
+    //public Object clone(){ Object obj=null; try{ obj=super.clone(); }catch(CloneNotSupportedException ex){ System.out.println(" no se puede duplicar"); } return obj; }
+    
+    
+    
+    
 }

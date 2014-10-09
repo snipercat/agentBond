@@ -186,11 +186,11 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
                 targetPath.add(pos); //Actuaizar target con las acciones que se deben ejecutar.
             } else {
                 // TODO Algoritmo de Busqueda que retorne el camino hacia el nodo sin explorar más cercano.
-                System.out.println("SEARCH!!!!!"); 
+                /*System.out.println("SEARCH!!!!!"); 
                 targetPath.clear();
                 targetPath.add(  grafo.getRandomChildPosition(actualNode) );
-                System.out.println("ADDED: "+ Utilities.getIdFromPosition(targetPath.get(0))); 
-                //targetPath = Utilities.applyDFS(grafo, actualNode);
+                System.out.println("ADDED: "+ Utilities.getIdFromPosition(targetPath.get(0))); */
+                targetPath = Utilities.applyDFS(grafo, actualNode);
             }
         }
         
@@ -202,7 +202,7 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
             
             // retorna la acción que se debe tomar de acuerdo a la posición deseada y a la orientación.
             int accion = nodoActual.getActionToChild( Utilities.getIdFromPosition(targetPos), orientation); 
-System.out.println("pos: "+Utilities.getIdFromPosition(position)  +" targt: "+Utilities.getIdFromPosition(targetPos)+" Action "+accion);            
+//System.out.println("pos: "+Utilities.getIdFromPosition(position)  +" targt: "+Utilities.getIdFromPosition(targetPos)+" Action "+accion);            
             //Actualizar datos
             this.lastVisitedNode = this.position.clone(); //Actualizar ultimo nodo visitado
             //updateOrientation(accion); //actualiza orientación

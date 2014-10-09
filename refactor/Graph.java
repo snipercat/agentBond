@@ -9,6 +9,7 @@ package unalcol.agents.examples.labyrinth.teseo.agentbond.refactor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import unalcol.agents.examples.labyrinth.teseo.agentbond.Nodo;
 
 /**
  *
@@ -80,11 +81,13 @@ public class Graph {
             globalOrientation = (orientation + 3)%4;
             addNode(node.setEmpyChildAt(globalOrientation));
         }
-        System.out.println("Position "+node.getId());
+        /*System.out.println("Position "+node.getId());
         System.out.println("CHILDS ADDED!!!!! "+node.getChildsasString());
         System.out.println("END CHILDS ADDED!!!!!");
+        */
       }
     
+        
     
 
     
@@ -144,7 +147,7 @@ public class Graph {
         Node child;
         //**
         
-        String info = "pos: "+node.getId()+ "Childs ["+ node.getChildsasString()+ "] ";
+   //     String info = "pos: "+node.getId()+ "Childs ["+ node.getChildsasString()+ "] ";
         
         //**
         
@@ -158,12 +161,31 @@ public class Graph {
         Random r = new Random();
         int n = r.nextInt(nodes.size());
         
-        info += "SelID: "+nodes.get(n).getId();
-        info += "Selpos: "+ Utilities.getIdFromPosition(nodes.get(n).getPosition());
-System.out.println(info);
+//        info += "SelID: "+nodes.get(n).getId();
+//        info += "Selpos: "+ Utilities.getIdFromPosition(nodes.get(n).getPosition());
+//System.out.println(info);
         return nodes.get(n).getPosition();
     }
     
+    
+    public ArrayList<Node> getSucessors( Node node) {
+        
+        String[] childsID = node.getChilds();
+        ArrayList<Node> sucesors = new ArrayList<>();
+        Node child;
+
+        for(int c=0; c<childsID.length; c++){
+            child = getNodeByID(childsID[c]);
+            if( child != null )
+                sucesors.add(child);
+        }
+        
+        
+        
+        
+        return sucesors;
+        
+    }
     
     
 }
