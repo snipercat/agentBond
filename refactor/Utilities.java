@@ -19,6 +19,7 @@ import unalcol.agents.examples.labyrinth.teseo.agentbond.refactor.SearchNode;
 public class Utilities {
 
     static int MAX_COST = 999;
+    static int LIMIT_AGENT_TICK = 3;
     
     static boolean isSameNode(Node NodeA, Node NodeB) {
         return NodeA.getId() == NodeB.getId();

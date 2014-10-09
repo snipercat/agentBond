@@ -9,6 +9,7 @@ import unalcol.agents.Action;
 import unalcol.agents.Percept;
 import unalcol.agents.examples.labyrinth.teseo.simple.*;
 import unalcol.agents.simulate.util.SimpleLanguage;
+import unalcol.types.collection.vector.Vector;
 
 /**
  *
@@ -25,6 +26,8 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
     private Graph grafo = new Graph();
     private int   lastDirectionTaken = 0;
     
+    private int tickAgent = 0;
+    protected Vector<String> agentCmd = new Vector<String>();
     
     public JamesBond2(SimpleLanguage _language) {
      super.setLanguage( _language);
@@ -43,56 +46,81 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
    */
     @Override
   public Action compute(Percept p){
-     
       
-      // Si hay un agente en el camino esperar o buscar otro camino
+     boolean PF;
+     boolean PD;
+     boolean PA;
+     boolean PI;
+     boolean MT = ( (Boolean) p.getAttribute(language.getPercept(4))).
+          booleanValue();
+     
+     boolean AF = false;
+     boolean AD = false;
+     boolean AA = false;
+     boolean AI = false;
+     
+     String x;     
+     
+     
+     // Intenta obtener percepciones de agente
       try{
-        boolean AF = ( (Boolean) p.getAttribute(language.getPercept(5))).
+        AF = ( (Boolean) p.getAttribute(language.getPercept(5))).
             booleanValue();
-        boolean AD = ( (Boolean) p.getAttribute(language.getPercept(6))).
+        AD = ( (Boolean) p.getAttribute(language.getPercept(6))).
             booleanValue();
-        boolean AA = ( (Boolean) p.getAttribute(language.getPercept(7))).
+        AA = ( (Boolean) p.getAttribute(language.getPercept(7))).
             booleanValue();
-        boolean AI = ( (Boolean) p.getAttribute(language.getPercept(8))).
+        AI = ( (Boolean) p.getAttribute(language.getPercept(8))).
             booleanValue();
-
-        if(AF || AD || AA || AI){
-            //TODO accion cuando hay agente.
-            return new Action(language.getAction(0));
         }
-      }
       catch(Exception e){
       }
+      
+      //Si hay agente al frente y debo avanzar
+      if(AF && cmd.size()==1){
+          //Si no ha pasado el tiempo de espera no hago nada
+          if(tickAgent < Utilities.LIMIT_AGENT_TICK){
+              tickAgent++;
+              System.out.println("stop");
+              return new Action(language.getAction(0));
+          }
+          else{
+                tickAgent = 0;
+                PD = ( (Boolean) p.getAttribute(language.getPercept(1))).
+                    booleanValue();
+                PA = ( (Boolean) p.getAttribute(language.getPercept(2))).
+                    booleanValue();
+                PI = ( (Boolean) p.getAttribute(language.getPercept(3))).
+                    booleanValue();
+              
+              
+               int d = SimpleReflex(PD || AD, PA || AA, PI || AI, MT);
+               addCommand(d);
+               targetPath.clear();
+          }
+          
+      }
+
     
       // Si no hay agente, continúa normal.
     
     if( cmd.size() == 0){
 
-      boolean PF = ( (Boolean) p.getAttribute(language.getPercept(0))).
+      PF = ( (Boolean) p.getAttribute(language.getPercept(0))).
           booleanValue();
-      boolean PD = ( (Boolean) p.getAttribute(language.getPercept(1))).
+      PD = ( (Boolean) p.getAttribute(language.getPercept(1))).
           booleanValue();
-      boolean PA = ( (Boolean) p.getAttribute(language.getPercept(2))).
+      PA = ( (Boolean) p.getAttribute(language.getPercept(2))).
           booleanValue();
-      boolean PI = ( (Boolean) p.getAttribute(language.getPercept(3))).
+      PI = ( (Boolean) p.getAttribute(language.getPercept(3))).
           booleanValue();
-      boolean MT = ( (Boolean) p.getAttribute(language.getPercept(4))).
-          booleanValue();
-
-      int d = accion(PF, PD, PA, PI, MT);
       
-      if (0 <= d && d < 4) {
-        for (int i = 1; i <= d; i++) {
-          cmd.add(language.getAction(3)); //rotate
-        }
-        cmd.add(language.getAction(2)); // advance
-      }
-      else {
-        cmd.add(language.getAction(0)); // die
-      }
+      int d = accion(PF, PD, PA, PI, MT);
+      addCommand(d);
+      
     }
     
-    String x = cmd.get(0);
+    x = cmd.get(0);
     cmd.remove(0);
     
     if( x.equals(language.getAction(3))){
@@ -103,7 +131,23 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
     }
     return new Action(x);
   }
-    
+   
+  /**
+   * Agrega a la lista de comandos los comandos necesarios para ejecutar la acción
+   * @param d 
+   */
+  private void addCommand(int d){
+      if (0 <= d && d < 4) {
+        for (int i = 1; i <= d; i++) {
+          cmd.add(language.getAction(3)); //rotate
+        }
+        cmd.add(language.getAction(2)); // advance
+      }
+      else {
+        cmd.add(language.getAction(0)); // die
+      }
+  }
+  
     
     @Override
     public int accion(boolean PF, boolean PD, boolean PA, boolean PI, boolean MT) {
@@ -241,6 +285,37 @@ public class JamesBond2 extends SimpleTeseoAgentProgram {
             this.position[1] +=1;
         if(this.orientation == 3)
             this.position[1] -=1;
+    }
+
+    
+    
+    private int SimpleReflex(boolean PD, boolean PA, boolean PI, boolean MT) {
+         
+         
+         // ACCIONES POR REFLEJO DONDE NO HAY INTERSECCIONES
+        
+        //GIRAR DERECHA
+        if (!PD) {
+            //updateOrientation(1);
+            //updatePosition();
+            return 1;
+        }
+        
+        
+        // DEVOLVERSE
+        if (PD && PI && !PA) {
+            //updateOrientation(2);
+            //updatePosition();
+            return 2;
+        }
+        //GIRAR IZQUIERDA
+        if (PI) {
+            //updateOrientation(3);
+            //updatePosition();
+            return 3;
+        }
+            return -1;
+         
     }
     
 
